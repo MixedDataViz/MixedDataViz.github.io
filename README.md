@@ -1,5 +1,5 @@
 ### Introduction
-This is the interactive visualization in html of experiments comparing mixedviz to other visualization methods ($t$-SNE, UMAP, and starcoords2D with ULDA and OLDA) with simulated and real data.
+This is the interactive visualization in html of experiments comparing mixedviz to other visualization methods (t-SNE, UMAP, and starcoords2D with ULDA and OLDA) with simulated and real data.
 
 ### Instructions for interactive views
 The 3D interative plots are implemented with the `rgl` functions and here are instructions for manipulation:
