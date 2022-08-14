@@ -1,0 +1,89 @@
+---
+title: "Starcoords3D for Simulated Data with 2 Groups"
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)
+```
+
+```{r}
+library(MixSim)
+library(RColorBrewer)
+library(MASS)
+library(expm)
+library(grDevices)
+library(rgl)
+library(radviz3d)
+library(uwot)
+library(scatterplot3d)
+
+source("starcoord3d.R")
+
+```
+
+
+```{r, echo=F}
+set.seed(2022)
+res_starcoords3d <- list()
+sim.palette <- c(rgb(red = 173, green = 216, blue = 230, max = 255), 
+                 rgb(max = 255, red = 139, green = 0, blue = 0))
+#image(matrix(1:2,ncol = 1),col = sim.palette)
+load("sim_data_100_2g.rda")
+for (i in 1:3){
+  df <- sim_data[[i]]
+  df.gdt <- radviz3d::Gtrans(df[,-1])
+  df.red <- mrp(data = df.gdt, cl = factor(df$class), npc = 4)$projected_df
+  plot.starcoords3D(data = df.red, pradius = 0.02, class = factor(df$class), 
+                    colors = sim.palette)
+  rgl::rgl.viewpoint(zoom = 0.6)
+  res_starcoords3d[[i]] <- rgl::rglwidget()
+}
+
+```
+
+
+<table width="500" border="0" cellpadding="0">
+
+
+<tr>
+<td align="center" valign="center">
+```{r}
+res_starcoords3d[[1]]
+```
+(i) Starcoords3D, $p = 100, \ddot\omega = 0.001$ 
+<br />
+</td>
+
+</tr>
+</tr>
+
+<td align="center" valign="center">
+```{r}
+res_starcoords3d[[2]]
+```
+(ii) Starcoords3D, $p = 100, \ddot\omega = 0.01$ 
+<br />
+</td>
+
+</tr>
+</tr>
+
+<td align="center" valign="center">
+```{r}
+res_starcoords3d[[3]]
+```
+(iii) Starcoords3D, $p = 100, \ddot\omega = 0.05$
+<br />
+</td>
+
+</tr>
+</table>

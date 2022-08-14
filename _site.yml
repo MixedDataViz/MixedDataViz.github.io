@@ -1,0 +1,15 @@
+name: MixedvizExperiments
+output_dir: "docs"
+navbar:
+  title: "Mixedviz Experiments"
+  left:
+    - text: "Description"
+      href: index.html
+    - text: "Visualizations"
+      href: supplement_mixedviz.html
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    theme: cosmo

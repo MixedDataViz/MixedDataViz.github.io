@@ -1,0 +1,100 @@
+---
+title: "2D Scatter Plot for Simulated Data with 2 Groups"
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE)
+```
+
+```{r}
+library(MixSim)
+library(RColorBrewer)
+library(MASS)
+library(expm)
+library(grDevices)
+library(rgl)
+library(radviz3d)
+library(ggplot2)
+library(scatterplot3d)
+
+```
+
+
+```{r, echo=F}
+set.seed(2022)
+sim.palette <- c(rgb(red = 173, green = 216, blue = 230, max = 255), 
+                 rgb(max = 255, red = 139, green = 0, blue = 0))
+#image(matrix(1:2,ncol = 1),col = sim.palette)
+load("sim_data_100_2g.rda")
+```
+
+
+<table width="500" border="0" cellpadding="0">
+
+
+<tr>
+<td align="center" valign="center">
+```{r}
+df <- sim_data[[1]]
+df.gdt <- radviz3d::Gtrans(df[,-1])
+df.red <- mrp(data = df.gdt, cl = factor(df$class), npc = 2)$projected_df
+ggplot(df.red, aes(x=df.red[,1], y=df.red[,2], pch = factor(df$class),
+                   color=factor(df$class))) + 
+    geom_point() + theme_light() + theme(legend.position = "none") + 
+    labs(x = "MRP 1", y = "MRP 2") +
+    scale_shape_manual(values=20:19) +
+    scale_color_manual(values=sim.palette)
+```
+(i) 2D Scatter Plot, $p = 100, \ddot\omega = 0.001$ 
+<br />
+</td>
+
+</tr>
+</tr>
+
+<td align="center" valign="center">
+```{r}
+df <- sim_data[[2]]
+df.gdt <- radviz3d::Gtrans(df[,-1])
+df.red <- mrp(data = df.gdt, cl = factor(df$class), npc = 2)$projected_df
+ggplot(df.red, aes(x=df.red[,1], y=df.red[,2], pch = factor(df$class),
+                   color=factor(df$class))) + 
+    geom_point() + theme_light() + theme(legend.position = "none") + 
+    labs(x = "MRP 1", y = "MRP 2") +
+    scale_shape_manual(values=20:19) +
+    scale_color_manual(values=sim.palette)
+```
+(i) 2D Scatter Plot, $p = 100, \ddot\omega = 0.01$ 
+<br />
+</td>
+
+</tr>
+</tr>
+
+<td align="center" valign="center">
+```{r}
+df <- sim_data[[3]]
+df.gdt <- radviz3d::Gtrans(df[,-1])
+df.red <- mrp(data = df.gdt, cl = factor(df$class), npc = 2)$projected_df
+ggplot(df.red, aes(x=df.red[,1], y=df.red[,2], pch = factor(df$class),
+                   color=factor(df$class))) + 
+    geom_point() + theme_light() + theme(legend.position = "none") + 
+    labs(x = "MRP 1", y = "MRP 2") +
+    scale_shape_manual(values=20:19) +
+    scale_color_manual(values=sim.palette)
+```
+(i) 2D Scatter Plot, $p = 100, \ddot\omega = 0.05$
+<br />
+</td>
+
+</tr>
+</table>
