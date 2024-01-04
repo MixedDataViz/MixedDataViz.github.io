@@ -73,7 +73,8 @@ plot.starcoords3D <- function(data, class, pradius = 0.02, lwd = 1,
   class.labels <- unlist(lapply(class[,drop=T], as.numeric))
   if (!utf.chars) {
       rgl::pch3d(x = data_trans, y = NULL, z = NULL, radius = pradius, 
-                 color = colors[class.labels], pch = letters[class.labels], size = cex,...)
+                 color = colors[class.labels], pch = letters[class.labels], 
+                 size = cex,...)
   }
   else {
       for (i in 1:max(class.labels))
@@ -109,7 +110,5 @@ plot.starcoords2D <- function(data, class, colors = RColorBrewer::brewer.pal(nam
     points(star, pch=pch[as.numeric(class)], col= colors[unclass(class)], cex = cex)
   }
 }
-
-#plot.starcoords2D(data = iris[,-5], class = iris[,5])
 
 #plot.starcoords3D(data = iris[,-5], class = iris[,5])

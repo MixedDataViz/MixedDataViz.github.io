@@ -388,13 +388,47 @@ plot.starcoords2D(senator.ulda[,-4], class = senator.ulda$class,
 
 <td align="center" valign="center">
 ```{r}
-df.red <- mrp(data = sn.df[,-543], cl = factor(sn.df[,543]), npc = 2)$projected_df
-ggplot(df.red, aes(x=df.red[,1], y=df.red[,2], pch = factor(sn.df[,543]),
-                   color=factor(sn.df[,543]))) + 
-    geom_point() + theme_light() + theme(legend.position = "none") + 
+df <- read_excel("datasets/senate_voting_data.xls")
+names <- colnames(df)[-(1:2)]
+names <- sub(" \\(.*", "", names)
+names <- sub(".* ", "", names)
+
+df.red <- mrp(data = sn.df[,-543], cl = factor(sn.df[,543]), npc = 2)$projected_df[,1:2]
+colnames(df.red) <- c("mrp1","mrp2")
+df.red$names <- names
+
+idx <- which((df.red$mrp1 > -6) & (df.red$mrp1 < 7.5))
+
+ggplot(df.red, aes(x = mrp1, y = mrp2, pch = class, color = class)) + 
+  geom_point() + 
+  theme_light() + theme(legend.position = "none") + 
     labs(x = "MRP 1", y = "MRP 2") +
-    scale_shape_manual(values=20:19) +
-    scale_color_manual(values=dk.palette)
+    scale_shape_manual(values=17:16) +
+    scale_color_manual(values=dk.palette) +
+  geom_text(aes(x = mrp1[idx[1]], y = mrp2[idx[1]]+2), 
+                      label = names[idx[1]], color = "black") +
+  geom_text(aes(x = mrp1[idx[2]], y = mrp2[idx[2]]+2), 
+                      label = names[idx[2]], color = "black") +
+  geom_text(aes(x = mrp1[idx[3]], y = mrp2[idx[3]]+2), 
+                      label = names[idx[3]], color = "black") +
+  geom_text(aes(x = mrp1[idx[4]], y = mrp2[idx[4]]+2), 
+                      label = names[idx[4]], color = "black") +
+  geom_text(aes(x = mrp1[idx[5]], y = mrp2[idx[5]]+2), 
+                      label = names[idx[5]], color = "black") +
+  geom_text(aes(x = mrp1[idx[6]], y = mrp2[idx[6]]+2), 
+                      label = names[idx[6]], color = "black") +
+  geom_text(aes(x = mrp1[idx[7]], y = mrp2[idx[7]]+2), 
+                      label = names[idx[7]], color = "black") +
+  geom_text(aes(x = mrp1[idx[8]], y = mrp2[idx[8]]+2), 
+                      label = names[idx[8]], color = "black") +
+  geom_text(aes(x = mrp1[idx[9]], y = mrp2[idx[9]]+2), 
+                      label = names[idx[9]], color = "black") +
+  geom_text(aes(x = mrp1[idx[10]], y = mrp2[idx[10]]+2), 
+                      label = names[idx[10]], color = "black") +
+  geom_text(aes(x = mrp1[idx[11]], y = mrp2[idx[11]]+2), 
+                      label = names[idx[11]], color = "black") +
+  geom_text(aes(x = mrp1[idx[12]], y = mrp2[idx[12]]+2), 
+                      label = names[idx[12]], color = "black") 
 ```
 <br />
 2D Scatter Plot
@@ -862,75 +896,10 @@ Starcoords3D
 </tr>
 </table>
 
-## Fig. S11: HCV Sequence Dataset
-```{r, eval = F}
-# data preprocessing
-library(stringi)
-xx <- ampir::read_faa(file = "HCV_ALL_2008_genome_DNA.fasta")
-# create classes
-# The first digit: genotype (7 of them); the second letter: subtype. 
-genotype = genosub <- rep(NA, nrow(xx))
-for (i in 1:nrow(xx)) {
-  genotype[i] = substr(xx[i,1],1,1)
-  genosub[i] = substr(xx[i,1],1,2)
-}
-genotype <- factor(genotype)
-genosub <- factor(genosub)
-
-seq.p = NULL # dimensions for each obs.
-for (i in 1:nrow(xx)) {
-  seq.p = c(seq.p, nchar(xx[i,2]))
-}
-
-# 2-bits coding: A, G, C, T -> 00, 01, 10, 11; R,S,Y,-, etc -> missing
-data <- NULL
-for (i in 1:nrow(xx)) {
-  str.trim <- substr(xx[i,2],1,min(seq.p))
-  str.trim <- stri_replace_all_regex(str.trim,
-                                  pattern=c('A', 'C', 'G', 'T'),
-                                  replacement=c('00', '01', '10', '11'),
-                                  vectorize=FALSE)
-  str.trim <- gsub("[^0-9.-]", "22", str.trim)
-  str.trim <- gsub("-", "22", str.trim)
-  vec <- unlist(strsplit(str.trim,""))
-  vec[vec=="2"] <- NA
-  vec <- as.numeric(vec)
-  data <- rbind(data, vec)
-}
-data <- data[, colSums(is.na(data)) == 0]
-dim(data) #471 7943*2
-hcv.2bits <- data.frame(genotype, genosub, data)
-
-# 4 bits coding: A, G, C, T -> 0001, 0010, 0100, 1000
-data <- NULL
-for (i in 1:nrow(xx)) {
-  str.trim <- substr(xx[i,2],1,min(seq.p))
-  str.trim <- stri_replace_all_regex(str.trim,
-                                  pattern=c('A', 'C', 'G', 'T'),
-                                  replacement=c('0001', '0010', '0100', '1000'),
-                                  vectorize=FALSE)
-  str.trim <- gsub("[^0-9.-]", "2222", str.trim)
-  str.trim <- gsub("-", "2222", str.trim)
-  vec <- unlist(strsplit(str.trim,""))
-  vec[vec=="2"] <- NA
-  vec <- as.numeric(vec)
-  data <- rbind(data, vec)
-}
-data <- data[, colSums(is.na(data)) == 0]
-dim(data) #471 7943*4
-hcv.4bits <- data.frame(genotype, genosub, data)
-
-save(hcv.2bits,hcv.4bits, file = "datasets/hcvseq.rda")
-```
-
+## Fig. S11: Single-cell RNA-seq Dataset
 ```{r}
-load("datasets/hcvseq.rda")
-summary(hcv.2bits$genotype)
-# remove groups 5 and 7, and the genosub column
-index <- c(which(hcv.2bits$genotype=="5"), which(hcv.2bits$genotype=="7"))
-
-df = hcv.4bits[-index,-2]
-df$genotype = droplevels(df$genotype)
+load("datasets/mousebraincells.rda")
+class <- factor(df.hvgs$group)
 ```
 
 
@@ -941,8 +910,8 @@ df$genotype = droplevels(df$genotype)
 <td align="center" valign="center">
 ```{r}
 set.seed(1)
-umap_res <- umap(as.matrix(sn.g.df[,-20243]), n_components = 3, 
-                 y = sn.g.df[,20243], target_weight = 0.5)
+umap_res <- umap(as.matrix(df.hvgs.gdt), n_components = 3, 
+                 y = class, target_weight = 0.5)
 res1 = data.frame(umap_res, class)
 colnames(res1) = c("x","y","z","class")
 # open 3d window
@@ -965,126 +934,13 @@ UMAP
 
 <td align="center" valign="center">
 ```{r}
-df.gdt <- radviz3d::Gtrans(df[,-1])
-# for 4 directions, minimum of 3 observation(s) in a cluster.
-df.red <- mrp(data = df.gdt, cl = factor(df$genotype), npc = 4)$projected_df
-plot.starcoords3D(data = df.red, class = factor(df$genotype), cex = 1)
-rgl::rgl.viewpoint(zoom = 0.6)
-rgl::rglwidget()
-```
-<br />
-Starcoords3D
-</td>
-</tr>
-</table>
-
-## Fig. S12: HIV Dataset
-```{r, eval = F}
-# data preprocessing
-library(stringi)
-xx <- ampir::read_faa(file = "for_yf.fsa")
-# create classes
-# The first digit: genotype (7 of them); the second letter: subtype. 
-class <- rep(NA, nrow(xx))
-for (i in 1:nrow(xx)) {
-  class[i] = substr(xx[i,1],1,2)
-}
-class <- factor(class)
-
-seq.p = NULL # dimensions for each obs.
-for (i in 1:nrow(xx)) {
-  seq.p = c(seq.p, nchar(xx[i,2]))
-}
-
-# 2-bits coding: A, G, C, T -> 00, 01, 10, 11; R,S,Y,-, etc -> missing
-data <- NULL
-for (i in 1:nrow(xx)) {
-  str.trim <- substr(xx[i,2],1,min(seq.p))
-  str.trim <- stri_replace_all_regex(str.trim,
-                                  pattern=c('A', 'C', 'G', 'T'),
-                                  replacement=c('00', '01', '10', '11'),
-                                  vectorize=FALSE)
-  str.trim <- gsub("[^0-9.-]", "22", str.trim)
-  str.trim <- gsub("-", "22", str.trim)
-  vec <- unlist(strsplit(str.trim,""))
-  vec[vec=="2"] <- NA
-  vec <- as.numeric(vec)
-  data <- rbind(data, vec)
-}
-data <- data[, colSums(is.na(data)) == 0]
-dim(data) #73 7432*2
-hiv.2bits <- data.frame(class, data)
-
-# 4 bits coding: A, G, C, T -> 0001, 0010, 0100, 1000
-data <- NULL
-for (i in 1:nrow(xx)) {
-  str.trim <- substr(xx[i,2],1,min(seq.p))
-  str.trim <- stri_replace_all_regex(str.trim,
-                                  pattern=c('A', 'C', 'G', 'T'),
-                                  replacement=c('0001', '0010', '0100', '1000'),
-                                  vectorize=FALSE)
-  str.trim <- gsub("[^0-9.-]", "2222", str.trim)
-  str.trim <- gsub("-", "2222", str.trim)
-  vec <- unlist(strsplit(str.trim,""))
-  vec[vec=="2"] <- NA
-  vec <- as.numeric(vec)
-  data <- rbind(data, vec)
-}
-data <- data[, colSums(is.na(data)) == 0]
-dim(data) #73 7432*4
-hiv.4bits <- data.frame(class, data)
-
-save(hiv.2bits,hiv.4bits, file = "datasets/hiv.rda")
-```
-
-```{r}
-load("datasets/hcvseq.rda")
-summary(hcv.2bits$genotype)
-# remove groups 5 and 7, and the genosub column
-index <- c(which(hcv.2bits$genotype=="5"), which(hcv.2bits$genotype=="7"))
-
-df = hcv.4bits[-index,-2]
-df$genotype = droplevels(df$genotype)
-```
-
-
-<table width="500" border="0" cellpadding="0">
-
-<tr>
-
-<td align="center" valign="center">
-```{r}
-set.seed(1)
-umap_res <- umap(as.matrix(sn.g.df[,-20243]), n_components = 3, 
-                 y = sn.g.df[,20243], target_weight = 0.5)
-res1 = data.frame(umap_res, class)
-colnames(res1) = c("x","y","z","class")
-# open 3d window
-
-# resize window
-par3d(windowRect = c(100, 100, 612, 612))
-# plot
-with(res1, plot3d(xlab = "", ylab="", zlab="",axes = F, x,y,z, type="s",size = 0.75,
-                  col = script.palette[1:nlevels(class)][as.numeric(class)]))
-box3d()
+# factor models
+df.hvgs.scores = fad.res$scores
+df.red <- mrp(data = fad.res$scores, cl = factor(class), nproj = 4)$projected_df
+plot.starcoords3D(data = df.red, pradius = 0.02, class = class, 
+                  colors = gtex.palette[2:8])
 rgl::rgl.viewpoint(zoom = 0.6)
 rglwidget()
-```
-<br />
-UMAP
-</td>
-</tr>
-
-<tr>
-
-<td align="center" valign="center">
-```{r}
-df.gdt <- radviz3d::Gtrans(df[,-1])
-# for 4 directions, minimum of 3 observation(s) in a cluster.
-df.red <- mrp(data = df.gdt, cl = factor(df$genotype), npc = 4)$projected_df
-plot.starcoords3D(data = df.red, class = factor(df$genotype), cex = 1)
-rgl::rgl.viewpoint(zoom = 0.6)
-rgl::rglwidget()
 ```
 <br />
 Starcoords3D
