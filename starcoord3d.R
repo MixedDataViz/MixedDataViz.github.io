@@ -57,7 +57,8 @@ simple.starcoords3D <- function(data, class) {
 
 plot.starcoords3D <- function(data, class, pradius = 0.02, lwd = 1, 
                               colors = RColorBrewer::brewer.pal(name = "Dark2", n = 8),
-                              pch = c(9818:9823, 9830, 9824, 9827, 9829),
+                              pch = letters[1:26],
+                              #pch = c(9818:9823, 9830, 9824, 9827, 9829),
                               cex = 1, utf.chars = FALSE,...) {
   x <- data
   x.range <- apply(x, 2, range)
@@ -73,7 +74,8 @@ plot.starcoords3D <- function(data, class, pradius = 0.02, lwd = 1,
   class.labels <- unlist(lapply(class[,drop=T], as.numeric))
   if (!utf.chars) {
       rgl::pch3d(x = data_trans, y = NULL, z = NULL, radius = pradius, 
-                 color = colors[class.labels], pch = letters[class.labels], 
+                 color = colors[class.labels], 
+                 pch = pch[class.labels], 
                  size = cex,...)
   }
   else {

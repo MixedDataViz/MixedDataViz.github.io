@@ -1,0 +1,87 @@
+---
+title: "Visualizations of HIV DNA-seq Dataset"
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE, cache = T)
+```
+
+```{r}
+library(MixSim)
+library(RColorBrewer)
+library(MASS)
+library(expm)
+library(grDevices)
+library(radviz3d)
+library(rgl)
+library(ggplot2)
+library(Rtsne)
+library(Rdimtools)
+library(uwot)
+library(scatterplot3d) 
+
+source("starcoord3d.R")
+
+# color palette
+load("colpal.rda")
+dk.palette = c(rgb(red = 173, green = 216, blue = 230, max = 255), 
+               rgb(max = 255, red = 139, green = 0, blue = 0))
+
+```
+
+```{r}
+load("datasets-gdt/hiv-class-yr-gdt.rda")
+class <- factor(cl)
+```
+
+<table width="500" border="0" cellpadding="0">
+
+<tr>
+
+<td align="center" valign="center">
+```{r}
+set.seed(1)
+umap_res <- umap(as.matrix(df.gdt), n_components = 3, 
+                 y = class, target_weight = 0.5)
+res1 = data.frame(umap_res, class)
+colnames(res1) = c("x","y","z","class")
+# open 3d window
+
+# resize window
+par3d(windowRect = c(100, 100, 612, 612))
+# plot
+with(res1, plot3d(xlab = "", ylab="", zlab="",axes = F, x,y,z, type="s",size = 0.75, col = script.palette[1:nlevels(class)][as.numeric(class)]))
+box3d()
+rgl::rgl.viewpoint(zoom = 0.6)
+rglwidget()
+```
+<br />
+(a) UMAP
+</td>
+
+<td align="center" valign="center">
+```{r}
+# plot the mrp reduced data
+df.red <- radviz3d::mrp(data = df.gdt, cl = class, npc = 4)$projected_df
+plot.starcoords3D(data = df.red, pradius = 0.02, class = class, colors = script.palette)
+rgl::rgl.viewpoint(zoom = 0.6)
+rglwidget()
+```
+<br />
+(b) Starcoords3D
+</td>
+</tr>
+</table>
+
+
+
+

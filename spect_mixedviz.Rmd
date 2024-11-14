@@ -1,0 +1,168 @@
+---
+title: "Visualizations of SPECT Heart Dataset"
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, error = FALSE, cache = T)
+```
+
+```{r}
+library(MixSim)
+library(RColorBrewer)
+library(MASS)
+library(expm)
+library(grDevices)
+library(radviz3d)
+library(rgl)
+library(ggplot2)
+library(Rtsne)
+library(Rdimtools)
+library(uwot)
+library(scatterplot3d) 
+
+source("starcoord3d.R")
+
+# color palette
+load("colpal.rda")
+dk.palette = c(rgb(red = 173, green = 216, blue = 230, max = 255), 
+               rgb(max = 255, red = 139, green = 0, blue = 0))
+
+```
+
+```{r}
+load("datasets-gdt/SPECT_normal.rda")
+sn <- as.matrix(SPECT_normal_class[,-1])
+class <- as.factor(SPECT_normal_class$class)
+sn.df <- data.frame(sn,class)
+```
+
+<table width="500" border="0" cellpadding="0">
+
+<tr>
+
+<td align="center" valign="center">
+```{r}
+set.seed(1)
+tsne <- Rtsne(as.matrix(sn.df[,-23]), dims = 3, 
+              perplexity=min(500,floor((nrow(sn.df)-1)/3)), 
+              check_duplicates = F,  
+              verbose=F, max_iter = 500)
+res1 = tsne$Y
+res1 = data.frame(res1, class)
+colnames(res1) = c("x","y","z","class")
+# open 3d window
+ 
+# resize window
+par3d(windowRect = c(100, 100, 612, 612))
+# plot
+with(res1, plot3d(xlab = "", ylab="", zlab="",axes = F, x,y,z, type="s",size = 0.75,
+                  col = dk.palette[1:nlevels(class)][as.numeric(class)]))
+box3d()
+rgl::rgl.viewpoint(zoom = 0.6)
+rglwidget()
+```
+<br />
+(a) t-SNE
+</td>
+
+<td align="center" valign="center">
+```{r}
+set.seed(1)
+umap_res <- umap(as.matrix(sn.df[,-23]), n_components = 3, y = sn.df[,23])
+res1 = data.frame(umap_res, class)
+colnames(res1) = c("x","y","z","class")
+# open 3d window
+
+# resize window
+par3d(windowRect = c(100, 100, 612, 612))
+# plot
+with(res1, plot3d(xlab = "", ylab="", zlab="",axes = F, x,y,z, type="s",size = 0.75,
+                  col = dk.palette[1:nlevels(class)][as.numeric(class)]))
+box3d()
+rgl::rgl.viewpoint(zoom = 0.6)
+rglwidget()
+```
+<br />
+(b) UMAP
+</td>
+</tr>
+
+<tr>
+
+<td align="center" valign="center">
+```{r}
+out2 = do.olda(as.matrix(sn.df[,-23]), ndim = 3, class)
+spect.olda = data.frame(out2$Y,class)
+plot.starcoords2D(spect.olda[,-4], class = spect.olda$class, 
+                  colors = dk.palette)
+```
+<br />
+(c) 2D Stars Coordinates with OLDA
+</td>
+
+<td align="center" valign="center">
+```{r}
+out2 = do.ulda(as.matrix(sn.df[,-23]), ndim = 3, class)
+spect.ulda = data.frame(out2$Y,class)
+plot.starcoords2D(spect.ulda[,-4], class = spect.ulda$class, 
+                  colors = dk.palette)
+```
+<br />
+(d) 2D Stars Coordinates with ULDA
+</td>
+</tr>
+
+<tr>
+<td align="center" valign="center">
+```{r}
+df.red <- mrp(data = sn.df[,-23], cl = factor(sn.df[,23]), nproj = 2)$projected_df
+ggplot(df.red, aes(x=df.red[,1], y=df.red[,2], pch = factor(sn.df[,23]),
+                   color=factor(sn.df[,23]))) + 
+    geom_point() + theme_light() + theme(legend.position = "none") + 
+    labs(x = "MRP 1", y = "MRP 2") +
+    scale_shape_manual(values=20:19) +
+    scale_color_manual(values=dk.palette)
+```
+<br />
+(e) 2D Scatter Plot
+</td>
+
+<td align="center" valign="center">
+```{r}
+df.red <- mrp(data = sn.df[,-23], cl = factor(sn.df[,23]), nproj = 3)$projected_df
+scatterplot3d(df.red, pch = (20:1)[as.numeric(class)],
+                     color = dk.palette[as.numeric(class)], 
+                     xlab = "",  ylab = "", zlab = "", box = F,
+                     grid = T, tick.marks = F, label.tick.marks = F)
+```
+<br />
+(f) 3D Scatter Plot
+</td>
+</tr>
+
+<tr>
+
+<td align="center" valign="center">
+```{r}
+load("datasets/spectdf.rda")
+plot.starcoords3D(data = sndf[,-5], pradius = 0.02, class = factor(sndf[,5]), 
+                  colors = dk.palette)
+rgl::rgl.viewpoint(zoom = 0.6)
+rglwidget()
+```
+<br />
+(g) Starcoords3D
+</td>
+</tr>
+</table>
+
+
