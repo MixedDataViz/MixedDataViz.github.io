@@ -312,6 +312,6 @@ save(overlap_mat_sim, sim_data, seed, file = "sim_data_100_4g.rda")
 [UMAP, Starcoords3D](hiv_mixedviz.html)
 
 ## Fig. S12: Mouse Brain Single-cell RNA-seq Dataset
-[UMAP, Starcoords3D](braincell_mixedviz.html)
+[OLDA, ULDA, UMAP, Starcoords3D](braincell_mixedviz.html)
 
 
