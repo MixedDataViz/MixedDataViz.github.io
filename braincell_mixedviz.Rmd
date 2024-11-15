@@ -49,6 +49,31 @@ class <- factor(df.hvgs$group)
 
 <td align="center" valign="center">
 ```{r}
+out2 = do.olda(as.matrix(df.hvgs.gdt), ndim = 4, class)
+brain.olda = data.frame(out2$Y,class)
+plot.starcoords2D(brain.olda[,-5], class = brain.olda$class, 
+                  colors = gtex.palette[2:8])
+```
+<br />
+(a) 2D Stars Coordinates with OLDA
+</td>
+
+<td align="center" valign="center">
+```{r}
+out2 = do.ulda(as.matrix(df.hvgs.gdt), ndim = 4, class)
+brain.ulda = data.frame(out2$Y,class)
+plot.starcoords2D(brain.ulda[,-5], class = brain.ulda$class, 
+                  colors = gtex.palette[2:8])
+```
+<br />
+(b) 2D Stars Coordinates with ULDA
+</td>
+</tr>
+
+<tr>
+
+<td align="center" valign="center">
+```{r}
 set.seed(1)
 umap_res <- umap(as.matrix(df.hvgs.gdt), n_components = 3,
                  y = class, target_weight = 0.5)
@@ -65,7 +90,7 @@ rgl::rgl.viewpoint(zoom = 0.6)
 rglwidget()
 ```
 <br />
-(a) UMAP
+(c) UMAP
 </td>
 
 <td align="center" valign="center">
@@ -79,7 +104,7 @@ rgl::rgl.viewpoint(zoom = 0.6)
 rglwidget()
 ```
 <br />
-(b) Starcoords3D
+(d) Starcoords3D
 </td>
 </tr>
 </table>
