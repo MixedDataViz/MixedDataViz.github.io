@@ -293,25 +293,25 @@ save(overlap_mat_sim, sim_data, seed, file = "sim_data_100_4g.rda")
 
 # Real Data Applications
 
-## Fig. S6: Senators Dataset
+## Fig. S6: Voting records of US senators
 [t-SNE, UMAP, OLDA, ULDA, 2D&3D Scatter Plots, Starcoords3D](senator_mixedviz.html)
 
-## Fig. S7: Adult Autism Spectrum Disorder (ASD) Dataset
+## Fig. S7: Adult Autism Spectrum Disorder (ASD) screening
 [t-SNE, UMAP, OLDA, ULDA, 2D&3D Scatter Plots, Starcoords3D](autisim_mixedviz.html)
 
-## Fig. S8: SPECT Heart Dataset
+## Fig. S8: SPECT heart dataset
 [t-SNE, UMAP, OLDA, ULDA, 2D&3D Scatter Plots, Starcoords3D](spect_mixedviz.html)
 
-## Fig. S9: Indic Scripts Dataset
+## Fig. S9: Indic scripts 
 [t-SNE, UMAP, OLDA, ULDA, Starcoords3D](script_mixedviz.html)
 
-## Fig. S10: Human Tissue RNA-seq Dataset
+## Fig. S10: RNA sequences of human tissues
 [UMAP, Starcoords3D](gtex_mixedviz.html)
 
-## Fig. S11: HIV DNA-seq Dataset
+## Fig. S11: HIV-1 sequences
 [UMAP, Starcoords3D](hiv_mixedviz.html)
 
-## Fig. S12: Mouse Brain Single-cell RNA-seq Dataset
+## Fig. S12: Single-cell RNA sequences of mouse brain
 [OLDA, ULDA, UMAP, Starcoords3D](braincell_mixedviz.html)
 
 
