@@ -39,7 +39,8 @@ dk.palette = c(rgb(red = 173, green = 216, blue = 230, max = 255),
 ```
 
 ```{r}
-load("datasets-gdt/hiv-class-yr-gdt.rda")
+#load("datasets-gdt/hiv-class-yr-gdt.rda")
+load("datasets-gdt/hiv-10779-gdt.rda")
 class <- factor(cl)
 ```
 
